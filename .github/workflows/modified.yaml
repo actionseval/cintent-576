@@ -1,0 +1,61 @@
+name: Coverage
+
+# CINTENT >> MANUAL_TRIGGER
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+on: [repository_dispatch, workflow_dispatch]
+
+jobs:
+  build:
+    name: Codecov
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9"]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install poetry
+      run: pipx install poetry==1.6.1
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        # CINTENT >> REMOVE_CACHE
+        # cache: 'poetry'
+
+    # CINTENT >> INSERT_CINTENT
+    - uses: JavidDitty/setup-cintent@3e5b2faf83a2ad32c22a1cd0f86f5f20ea53a5ab
+
+    - name: Install dependencies
+      run: |
+        poetry env use ${{ matrix.python-version }}
+        poetry install --all-extras --with dev
+        poetry run pip install "torch<3.0" -i https://download.pytorch.org/whl/cpu
+        poetry run pip install "pytorch-lightning<3.0"
+
+    - name: Run Coverage
+      run: |
+        poetry run pytest --cov-report=xml --cov=numalogic --cov-config .coveragerc tests/ -sq
+
+    # CINTENT >> REMOVE_UPLOAD
+    # - name: Upload Coverage
+    #   uses: codecov/codecov-action@v3
+    #   with:
+    #     files: ./coverage.xml
+    #     fail_ci_if_error: true
+    #     verbose: true
+
+    # CINTENT >> INSERT_CINTENT
+    - name: Upload CIntent Artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ${{ env.CINTENT_ARTIFACT_NAME }}
+        path: ${{ env.CINTENT_LOGS }}

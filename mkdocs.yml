@@ -1,0 +1,53 @@
+site_name: Numalogic - Collection of operational time series ML models and tools
+repo_url: https://github.com/numaproj/numalogic
+edit_uri: edit/main/docs/
+strict: true
+theme:
+  name: material
+  favicon: assets/numaproj.svg
+  font:
+    text: Roboto
+    code: Roboto Mono
+  logo: assets/logo.png
+  palette:
+    - scheme: default
+      primary: blue
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+extra:
+  analytics:
+    provider: google
+    property: G-9D7BFBLNPB
+markdown_extensions:
+  - codehilite
+  - admonition
+  - pymdownx.superfences
+  - pymdownx.details
+  - toc:
+      permalink: true
+nav:
+  - Home: README.md
+  - Getting Started:
+      - quick-start.md
+  - User Guide:
+      - data-generator.md
+      - Core Concepts:
+          - Training:
+              - autoencoders.md
+              - forecasting.md
+          - inference.md
+          - Addons:
+              - pre-processing.md
+              - post-processing.md
+      - Model Registry:
+          - ml-flow.md
+  - Numaproj: https://numaproj.io
